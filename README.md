@@ -1,11 +1,11 @@
 
 
 
-<picture>
+<!-- <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/repo_logo_dark.png" width='100%'>
   <source media="(prefers-color-scheme: light)" srcset="./assets/repo_logo_light.png" width='100%'>
   <img alt="Project logo" src="/assets/" width="100%">
-</picture>
+</picture> -->
 
 <br>
 
@@ -56,8 +56,7 @@ $ pip install git+https://github.com/schwallergroup/CycPepPerm.git
 
 ## ✅ Citation
 
-Philippe Schwaller et al. "Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction". ACS Central Science 2019 5 (9), 1572-1583
-```bibtex
+<!-- Philippe Schwaller et al. "Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction". ACS Central Science 2019 5 (9), 1572-1583
 @article{doi:10.1021/acscentsci.9b00576,
     author = {Schwaller, Philippe and Laino, Teodoro and Gaudin, Théophile and Bolgar, Peter and Hunter, Christopher A. and Bekas, Costas and Lee, Alpha A.},
     title = {Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction},
@@ -67,8 +66,8 @@ Philippe Schwaller et al. "Molecular Transformer: A Model for Uncertainty-Calibr
     pages = {1572-1583},
     year = {2019},
     doi = {10.1021/acscentsci.9b00576},
-}
-
+} -->
+```bibtex
 @Misc{this_repo,
   author = { Rebecca M Neeser },
   title = { cyc_pep_perm - Python package to predict membrane permeability of cyclic peptides. },
