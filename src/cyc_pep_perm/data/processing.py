@@ -8,12 +8,24 @@ from rdkit import Chem
 
 
 class DataProcessing:
+    """
+    Class for processing data related to cyclic peptide membrane permeability.
+    """
+
     def __init__(
         self,
         datapath="data/raw/Cyclic_peptide_membrane_permeability_random80percent.ods",
         target_label="CAPA [1 µM]",
         smiles_label="SMILES",
     ):
+        """
+        Initialize the DataProcessing object.
+
+        Args:
+            datapath (str): Path to the data file.
+            target_label (str): Label of the target variable.
+            smiles_label (str): Label of the SMILES column.
+        """
         self.datapath = datapath
         assert os.path.exists(self.datapath), "File does not exist"
         self.target_label = target_label
@@ -24,6 +36,9 @@ class DataProcessing:
         self.read_data()
 
     def read_data(self):
+        """
+        Read the data from the file and perform necessary preprocessing.
+        """
         try:
             self.data = pd.read_csv(self.datapath)
         except Exception:
@@ -41,6 +56,13 @@ class DataProcessing:
         )
 
     def calc_mordred(self, filename=None):
+        """
+        Calculate Mordred descriptors for the molecules and save the results to a file.
+
+        Args:
+            filename (str, optional): Path to save the Mordred data. If not provided, a
+            default filename will be used.
+        """
         df_mordred = self.calculator.pandas(self.mols)
         for col in df_mordred.columns:
             vals = df_mordred[col].values
@@ -58,6 +80,9 @@ class DataProcessing:
         df_mordred.to_csv(filename, index=False)
 
     def scale_data(self):
-        # TODO scale both original and mordred data
-        os.path.makedirs("data/scaled", exist_ok=True)
+        """
+        Scale the original and Mordred data.
+        """
+        # TODO: Implement scaling for both original and Mordred data
+        os.makedirs("data/scaled", exist_ok=True)
         pass
