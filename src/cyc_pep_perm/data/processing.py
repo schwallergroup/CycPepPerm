@@ -35,6 +35,11 @@ class DataProcessing:
         self.data.rename(columns={self.target_label: "target"}, inplace=True)
         self.data.rename(columns={self.smiles_label: "SMILES"}, inplace=True)
 
+        self.data.to_csv(
+            f"data/raw/{self.datapath.split('/')[-1].split('.')[0]}.csv",
+            index=False,
+        )
+
     def calc_mordred(self, filename=None):
         df_mordred = self.calculator.pandas(self.mols)
         for col in df_mordred.columns:
