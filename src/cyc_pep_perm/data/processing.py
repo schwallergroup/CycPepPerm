@@ -3,24 +3,11 @@ import pickle
 
 import pandas as pd
 from pandas_ods_reader import read_ods
-import mordred
 from mordred import Calculator, descriptors
 from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 
-
-FEATURES_DW = [
-    "MW",
-    "cLogP",
-    "cLogS",
-    "HBA",
-    "HBD",
-    "Total Surface Area",
-    "Rel. PSA",
-    "PSA",
-    "Rot. Bonds",
-    "Amides",
-]
+from cyc_pep_perm.data.descriptors import FEATURES_DW, MORDRED_DESCS
 
 
 class DataProcessing:
@@ -67,7 +54,7 @@ class DataProcessing:
         self.data.rename(columns={self.smiles_label: "SMILES"}, inplace=True)
 
         # drop irrelevant columns for training
-        self.data = self.data[['SMILES', 'target'] + FEATURES_DW]
+        self.data = self.data[["SMILES", "target"] + FEATURES_DW]
 
         new_filepath = f"data/{self.datapath.split('/')[-1].split('.')[0]}.csv"
         self.data.to_csv(new_filepath, index=False)
@@ -88,20 +75,15 @@ class DataProcessing:
             self.read_data()
 
         self.df_mordred = self.calculator.pandas(self.mols)
-        for col in self.df_mordred.columns:
-            vals = self.df_mordred[col].values
-            if all(isinstance(x, mordred.error.Error) for x in vals):
-                self.df_mordred = self.df_mordred.drop(col, axis=1)
-
-        assert len(self.df_mordred.columns) == 1597
+        self.df_mordred = self.df_mordred[MORDRED_DESCS]
 
         self.df_mordred["SMILES"] = self.smiles
         if "target" in self.data.columns:
-            self.df_mordred["target"] = self.data['target']
+            self.df_mordred["target"] = self.data["target"]
 
         if not filename:
             filename = "data/" \
-                f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+                  f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
         self.df_mordred.to_csv(filename, index=False)
 
         print(f"Saved Mordred descriptors to {filename}")
@@ -123,29 +105,37 @@ class DataProcessing:
 
         if raw_data:
             data = pd.read_csv(raw_data)
-            scaler_path = raw_data.split('.')[0] + '_scaler.pkl'
+            scaler_path = raw_data.split(".")[0] + "_scaler.pkl"
         else:
-            scaler_path = self.datapath.split('.')[0] + '_scaler.pkl'
-            raw_data = self.datapath.split('.')[0] + '.csv'
+            scaler_path = self.datapath.split(".")[0] + "_scaler.pkl"
+            raw_data = self.datapath.split(".")[0] + ".csv"
             if mordred:
-                raw_data = raw_data.split('.')[0] + '_mordred.csv'
-                assert self.df_mordred is not None, 'Mordred data not loaded'
+                raw_data = raw_data.split(".")[0] + "_mordred.csv"
+                assert self.df_mordred is not None, "Mordred data not loaded"
                 data = self.df_mordred
             else:
-                assert self.data is not None, 'Data not loaded'
+                assert self.data is not None, "Data not loaded"
                 data = self.data
 
         if mordred:
-            scaler_path = scaler_path.split('.')[0] + '_mordred.pkl'
-            assert 'nAcid' in data.columns, 'Data does not contain Mordred descriptors'
-            feat_cols = [col for col in data.columns if col not in ["SMILES", "target"]]
+            scaler_path = scaler_path.split(".")[0] + "_mordred.pkl"
+            assert set(MORDRED_DESCS).issubset(
+                set(data.columns)
+            ), "Data does not contain Mordred descriptors"
+            assert len(set(MORDRED_DESCS).intersection(set(data.columns))) == len(
+                MORDRED_DESCS
+            ), "Data does not contain all Mordred descriptors"
+
+            feat_cols = MORDRED_DESCS
             # array of features
             X = data[feat_cols].values
         else:
-            assert set(FEATURES_DW).issubset(set(data.columns)), \
-                'Data does not contain DataWarrior descriptors'
-            assert len(set(FEATURES_DW).intersection(set(data.columns))) == 10, \
-                'Data does not contain all DataWarrior descriptors'
+            assert set(FEATURES_DW).issubset(
+                set(data.columns)
+            ), "Data does not contain DataWarrior descriptors"
+            assert (
+                len(set(FEATURES_DW).intersection(set(data.columns))) == 10
+            ), "Data does not contain all DataWarrior descriptors"
             feat_cols = FEATURES_DW
             # array of features
             X = data[feat_cols].values
@@ -165,12 +155,12 @@ class DataProcessing:
         df_scaled = pd.DataFrame(X_scaled, columns=feat_cols)
         df_scaled["target"] = y_scaled
         df_scaled["SMILES"] = data["SMILES"]
-        df_scaled.to_csv(raw_data.split('.')[0] + '_scaled.csv', index=False)
+        df_scaled.to_csv(raw_data.split(".")[0] + "_scaled.csv", index=False)
 
         print(f"Saved scaled data to {raw_data.split('.')[0] + '_scaled.csv'}")
         print(f"Saved scaler to {scaler_path}")
 
-    def scale_test_data(self, mordred=False, raw_data=None):
+    def scale_test_data(self, mordred=False, raw_data=None,):
         """
         Scale the test set of the original (DataWarrior descs) or Mordred data.
         Not needed for tree-based models (RF, XGBoost).
@@ -185,29 +175,36 @@ class DataProcessing:
 
         if raw_data:
             data = pd.read_csv(raw_data)
-            scaler_path = raw_data.split('.')[0] + '_scaler.pkl'
+            scaler_path = raw_data.split(".")[0] + "_scaler.pkl"
         else:
-            scaler_path = self.datapath.split('.')[0] + '_scaler.pkl'
-            raw_data = self.datapath.split('.')[0] + '.csv'
+            scaler_path = self.datapath.split(".")[0] + "_scaler.pkl"
+            raw_data = self.datapath.split(".")[0] + ".csv"
             if mordred:
-                raw_data = raw_data.split('.')[0] + '_mordred.csv'
-                assert self.df_mordred is not None, 'Mordred data not loaded'
+                raw_data = raw_data.split(".")[0] + "_mordred.csv"
+                assert self.df_mordred is not None, "Mordred data not loaded"
                 data = self.df_mordred
             else:
-                assert self.data is not None, 'Data not loaded'
+                assert self.data is not None, "Data not loaded"
                 data = self.data
 
         if mordred:
-            scaler_path = scaler_path.split('.')[0] + '_mordred.pkl'
-            assert 'nAcid' in data.columns, 'Data does not contain Mordred descriptors'
-            feat_cols = [col for col in data.columns if col not in ["SMILES", "target"]]
-            # array of features
+            scaler_path = scaler_path.split(".")[0] + "_mordred.pkl"
+            assert set(MORDRED_DESCS).issubset(
+                set(data.columns)
+            ), "Data does not contain Mordred descriptors"
+            assert len(set(MORDRED_DESCS).intersection(set(data.columns))) == len(
+                MORDRED_DESCS
+            ), "Data does not contain all Mordred descriptors"
+
+            feat_cols = MORDRED_DESCS
             X = data[feat_cols].values
         else:
-            assert set(FEATURES_DW).issubset(set(data.columns)), \
-                'Data does not contain DataWarrior descriptors'
-            assert len(set(FEATURES_DW).intersection(set(data.columns))) == 10, \
-                'Data does not contain all DataWarrior descriptors'
+            assert set(FEATURES_DW).issubset(
+                set(data.columns)
+            ), "Data does not contain DataWarrior descriptors"
+            assert (
+                len(set(FEATURES_DW).intersection(set(data.columns))) == 10
+            ), "Data does not contain all DataWarrior descriptors"
             feat_cols = FEATURES_DW
             # array of features
             X = data[feat_cols].values
@@ -226,7 +223,7 @@ class DataProcessing:
         df_scaled = pd.DataFrame(X_scaled, columns=feat_cols)
         df_scaled["target"] = y_scaled
         df_scaled["SMILES"] = data["SMILES"]
-        df_scaled.to_csv(raw_data.split('.')[0] + '_scaled.csv', index=False)
+        df_scaled.to_csv(raw_data.split(".")[0] + "_scaled.csv", index=False)
 
         print(f"Saved scaled data to {raw_data.split('.')[0] + '_scaled.csv'}")
         print(f"Saved scaler to {scaler_path}")
