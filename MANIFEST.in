@@ -12,7 +12,10 @@ recursive-include docs/source *.py
 recursive-include docs/source *.rst
 recursive-include docs/source *.png
 
+recursive-include data *.csv
+recursive-include data *.ods
+
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 
-include README.md LICENSE
+include README.md LICENSE README.html
 exclude tox.ini .bumpversion.cfg .readthedocs.yml .cruft.json CITATION.cff docker-compose.yml Dockerfile
