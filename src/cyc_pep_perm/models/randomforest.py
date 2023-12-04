@@ -1,5 +1,6 @@
 import pickle
 import os
+from typing import Dict
 
 import numpy as np
 import pandas as pd
@@ -9,6 +10,7 @@ from sklearn.ensemble import RandomForestRegressor
 import shap
 
 from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW_
+
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
@@ -21,23 +23,34 @@ PARAMS = {
 
 
 class RFRegressor:
-    """
-    Class for training and evaluating a random forest regressor.
-    """
-
     def __init__(self):
-        self.datapath = None
-        self.data = None
-        self.X = None
-        self.y = None
-        self.best_model = None
+        self.datapath: str = None
+        self.data: pd.DataFrame = None
+        self.X: pd.DataFrame = None
+        self.y: pd.Series = None
+        self.best_model: RandomForestRegressor = None
 
     def train(
-            self,
-            datapath=TRAIN_RANDOM_DW_,
-            params=PARAMS,
-            savepath=MODEL_RF_RANDOM_DW
-            ):
+        self,
+        datapath: str = TRAIN_RANDOM_DW_,
+        params: Dict[str, list] = PARAMS,
+        savepath: str = MODEL_RF_RANDOM_DW
+    ) -> RandomForestRegressor:
+        """
+        Trains a random forest regressor model.
+
+        Args:
+            datapath (str): The path to the training data. params (Dict[str, list]): The
+            hyperparameters for the random forest regressor model.
+            savepath (str): The
+            path to save the trained model.
+
+        Returns:
+            RandomForestRegressor: The best trained random forest regressor model.
+
+        Raises:
+            AssertionError: If the specified datapath does not exist.
+        """
         # Data
         self.datapath = datapath
         assert os.path.exists(self.datapath), "File does not exist"
@@ -72,7 +85,25 @@ class RFRegressor:
 
         return self.best_model
 
-    def evaluate(self, X=None, y=None):
+    def evaluate(self, X: pd.DataFrame = None, y: pd.Series = None) -> tuple:
+        """
+        Evaluates the trained model on given data.
+
+        Args:
+            X (pandas.DataFrame, optional): The features of the data to evaluate. If not
+            provided, uses the training data.
+            y (pandas.Series, optional): The target
+            variable of the data to evaluate. If not provided, uses the training data.
+
+        Returns:
+            tuple: A tuple containing the predicted values, RMSE (Root Mean Squared
+            Error), and R-squared score.
+
+        Raises:
+            AssertionError: If the best model is not found (not loaded or trained).
+
+        """
+
         assert self.best_model is not None, "Best model not found - load or train model"
         if X is None:
             X = self.X
@@ -88,18 +119,62 @@ class RFRegressor:
 
         return y_pred, rmse, r2
 
-    def predict(self, X):
+    def predict(self, X: pd.DataFrame) -> np.ndarray:
+        """
+        Makes predictions using the trained model.
+
+        Args:
+            X (pandas.DataFrame): The features of the data to make predictions.
+
+        Returns:
+            numpy.ndarray: The predicted values.
+
+        Raises:
+            AssertionError: If the best model is not found (not loaded or trained).
+
+        """
+
         assert self.best_model is not None, "Best model not found - load or train model"
         y_pred = self.best_model.predict(X)
         return y_pred
 
-    def load(self, modelpath=MODEL_RF_RANDOM_DW):
+    def load(self, modelpath: str = MODEL_RF_RANDOM_DW) -> RandomForestRegressor:
+        """
+        Loads a trained model from a file.
+
+        Args:
+            modelpath (str): The path to the trained model file.
+
+        Returns:
+            sklearn.ensemble.RandomForestRegressor: The loaded trained model.
+
+        Raises:
+            AssertionError: If the specified modelpath does not exist.
+
+        """
+
         assert os.path.exists(modelpath), "File does not exist"
         with open(modelpath, "rb") as f:
             self.best_model = pickle.load(f)
         return self.best_model
 
-    def test(self, testpath):
+    def test(self, testpath: str) -> tuple:
+        """
+        Evaluates the trained model on a test dataset.
+
+        Args:
+            testpath (str): The path to the test dataset.
+
+        Returns:
+            tuple: A tuple containing the predicted values, RMSE (Root Mean Squared
+            Error), and R-squared score.
+
+        Raises:
+            AssertionError: If the specified testpath does not exist. AssertionError: If
+            the best model is not found (not loaded or trained).
+
+        """
+
         assert os.path.exists(testpath), "File does not exist"
         test_data = pd.read_csv(testpath)
         X_test = test_data.drop(["SMILES", "target"], axis=1)
@@ -112,7 +187,23 @@ class RFRegressor:
         print(f"R-squared: {r2:.3f}")
         return y_pred, rmse, r2
 
-    def shap_explain(self, X=None):
+    def shap_explain(self, X: pd.DataFrame = None) -> np.ndarray:
+        """
+        Generates SHAP (SHapley Additive exPlanations) values for the trained model.
+
+        Args:
+            X (pandas.DataFrame, optional): The features of the data to generate SHAP
+            values. If not provided, uses the training data.
+
+        Returns:
+            numpy.ndarray: The SHAP values.
+
+        Raises:
+            AssertionError: If the best model is not found (not loaded or trained).
+            AssertionError: If the training data is not found (not loaded or trained).
+
+        """
+
         assert self.best_model is not None, "Best model not found - load or train model"
         if X is None:
             X = self.X
