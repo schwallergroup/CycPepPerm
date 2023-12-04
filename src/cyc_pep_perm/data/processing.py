@@ -8,6 +8,7 @@ from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 
 from cyc_pep_perm.data.descriptors import FEATURES_DW, MORDRED_DESCS
+from cyc_pep_perm.data.paths import DATA_PATH
 
 
 class DataProcessing:
@@ -56,7 +57,9 @@ class DataProcessing:
         # drop irrelevant columns for training
         self.data = self.data[["SMILES", "target"] + FEATURES_DW]
 
-        new_filepath = f"data/{self.datapath.split('/')[-1].split('.')[0]}.csv"
+        new_filepath = os.path.join(
+            DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
+        )
         self.data.to_csv(new_filepath, index=False)
 
         print(f"Saved data to {new_filepath}")
@@ -82,8 +85,9 @@ class DataProcessing:
             self.df_mordred["target"] = self.data["target"]
 
         if not filename:
-            filename = "data/" \
-                  f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+            filename = os.path.join(
+                DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+            )
         self.df_mordred.to_csv(filename, index=False)
 
         print(f"Saved Mordred descriptors to {filename}")
@@ -101,14 +105,15 @@ class DataProcessing:
             raw_data (str, optional): Path to the raw data file. If not provided,
             the default path will be used.
         """
-        os.makedirs("data/scaled", exist_ok=True)
 
         if raw_data:
             data = pd.read_csv(raw_data)
             scaler_path = raw_data.split(".")[0] + "_scaler.pkl"
         else:
-            scaler_path = self.datapath.split(".")[0] + "_scaler.pkl"
-            raw_data = self.datapath.split(".")[0] + ".csv"
+            scaled_folder = os.path.join(DATA_PATH, "scaled")
+            basename = self.datapath.split("/")[-1].split(".")[0]
+            scaler_path = os.path.join(scaled_folder, basename + "_scaler.pkl")
+            raw_data = os.path.join(scaled_folder, basename + ".csv")
             if mordred:
                 raw_data = raw_data.split(".")[0] + "_mordred.csv"
                 assert self.df_mordred is not None, "Mordred data not loaded"
@@ -160,7 +165,11 @@ class DataProcessing:
         print(f"Saved scaled data to {raw_data.split('.')[0] + '_scaled.csv'}")
         print(f"Saved scaler to {scaler_path}")
 
-    def scale_test_data(self, mordred=False, raw_data=None,):
+    def scale_test_data(
+        self,
+        mordred=False,
+        raw_data=None,
+    ):
         """
         Scale the test set of the original (DataWarrior descs) or Mordred data.
         Not needed for tree-based models (RF, XGBoost).

@@ -23,7 +23,22 @@ PARAMS = {
 
 
 class RFRegressor:
+    """
+    A class used to represent a random forest regressor model.
+
+    Attributes:
+        datapath (str): The path to the training data.
+        data (pandas.DataFrame): The training data.
+        X (pandas.DataFrame): The features of the training data.
+        y (pandas.Series): The target variable of the training data.
+        best_model (sklearn.ensemble.RandomForestRegressor): The best trained random
+        forest regressor model.
+
+    """
     def __init__(self):
+        """
+        The constructor for RFRegressor class.
+        """
         self.datapath: str = None
         self.data: pd.DataFrame = None
         self.X: pd.DataFrame = None

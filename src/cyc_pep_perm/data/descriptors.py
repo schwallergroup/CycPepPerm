@@ -1,3 +1,8 @@
+'''
+This file contains the descriptor names used in the project.
+
+'''
+
 FEATURES_DW = [
     "MW",
     "cLogP",
