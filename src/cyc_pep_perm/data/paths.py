@@ -16,3 +16,5 @@ TRAIN_RANDOM_MORDRED = os.path.join(
 MODEL_PATH = os.path.join(ROOT_PATH, "models")
 MODEL_RF_RANDOM_DW = os.path.join(MODEL_PATH, "rf_random_dw.pkl")
 MODEL_RF_RANDOM_MORDRED = os.path.join(MODEL_PATH, "rf_random_mordred.pkl")
+MODEL_XGB_RANDOM_DW = os.path.join(MODEL_PATH, "xgb_random_dw.pkl")
+MODEL_XGB_RANDOM_MORDRED = os.path.join(MODEL_PATH, "xgb_random_mordred.pkl")

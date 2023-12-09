@@ -6,62 +6,64 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.ensemble import RandomForestRegressor
+from xgboost import XGBRegressor
 import shap
 
-from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW_
+from cyc_pep_perm.data.paths import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW_
 
 
 PARAMS = {
-    "n_estimators": [100, 200, 300, 400, 500],  # number of trees
-    "max_features": ["sqrt", "log2", 1.0],  # features to consider at every split
-    "max_depth": [5, 10, 20, 30],  # maximum depth of tree
-    "min_samples_split": [2, 5, 10, 20],  # min samples required to split a node
-    "min_samples_leaf": [1, 2, 4, 8],  # min samples required to be at a leaf node
-    "bootstrap": [True, False],  # method of selecting samples for training each tree
+    'max_depth': [3, 4, 5, 8, 10],
+    'learning_rate': [0.01, 0.05, 0.1, 0.15, 0.2],
+    'n_estimators': [100, 200, 300, 400, 500],
+    'reg_alpha': [0.01, 0.05, 0.1, 0.15, 0.2],
+    'reg_lambda': [0.01, 0.05, 0.1, 0.15, 0.2],
+    'min_child_weight': [1, 2, 5, 8, 10],
+    'gamma': [0.01, 0.05, 0.1, 0.15, 0.2],
+    'subsample': [0.01, 0.1, 0.2],
+    'colsample_bytree': [0.01, 0.1, 0.2]
 }
 
 
-class RF:
+class XGB:
     """
-    A class used to represent a random forest regressor model.
+    A class used to represent a XGBoost regressor model.
 
     Attributes:
-        datapath (str): The path to the training data.
-        data (pandas.DataFrame): The training data.
-        X (pandas.DataFrame): The features of the training data.
-        y (pandas.Series): The target variable of the training data.
-        best_model (sklearn.ensemble.RandomForestRegressor): The best trained random
-        forest regressor model.
+        datapath (str): The path to the training data. data (pandas.DataFrame): The
+        training data. X (pandas.DataFrame): The features of the training data. y
+        (pandas.Series): The target variable of the training data.
+        best_model(sklearn.ensemble.XGBRegressor): The best trained random XGBoost
+        regressor model.
 
     """
     def __init__(self):
         """
-        The constructor for RFRegressor class.
+        The constructor for XGBRegressor class.
         """
         self.datapath: str = None
         self.data: pd.DataFrame = None
         self.X: pd.DataFrame = None
         self.y: pd.Series = None
-        self.best_model: RandomForestRegressor = None
+        self.best_model: XGBRegressor = None
 
     def train(
         self,
         datapath: str = TRAIN_RANDOM_DW_,
         params: Dict[str, List[Any]] = PARAMS,
-        savepath: str = MODEL_RF_RANDOM_DW
-    ) -> RandomForestRegressor:
+        savepath: str = MODEL_XGB_RANDOM_DW
+    ) -> XGBRegressor:
         """
-        Trains a random forest regressor model.
+        Trains a XGBoost regressor model.
 
         Args:
             datapath (str): The path to the training data. params (Dict[str, list]): The
-            hyperparameters for the random forest regressor model.
+            hyperparameters for the XGBoost regressor model.
             savepath (str): The
             path to save the trained model.
 
         Returns:
-            RandomForestRegressor: The best trained random forest regressor model.
+            XGBRegressor: The best trained XGBoost regressor model.
 
         Raises:
             AssertionError: If the specified datapath does not exist.
@@ -74,7 +76,7 @@ class RF:
         self.y = self.data["target"]
 
         # Model
-        model = RandomForestRegressor()
+        model = XGBRegressor()
 
         # K-fold cross validation
         kf = KFold(n_splits=8, shuffle=True)
@@ -153,7 +155,7 @@ class RF:
         y_pred = self.best_model.predict(X)
         return y_pred
 
-    def load(self, modelpath: str = MODEL_RF_RANDOM_DW) -> RandomForestRegressor:
+    def load(self, modelpath: str = MODEL_XGB_RANDOM_DW) -> XGBRegressor:
         """
         Loads a trained model from a file.
 
@@ -161,7 +163,7 @@ class RF:
             modelpath (str): The path to the trained model file.
 
         Returns:
-            sklearn.ensemble.RandomForestRegressor: The loaded trained model.
+            sklearn.ensemble.XGBRegressor: The loaded trained model.
 
         Raises:
             AssertionError: If the specified modelpath does not exist.
@@ -192,12 +194,12 @@ class RF:
 
         assert os.path.exists(testpath), "File does not exist"
         test_data = pd.read_csv(testpath)
-        self.X_test = test_data.drop(["SMILES", "target"], axis=1)
-        self.y_test = test_data["target"]
+        X_test = test_data.drop(["SMILES", "target"], axis=1)
+        y_test = test_data["target"]
         assert self.best_model is not None, "Best model not found - load or train model"
-        y_pred = self.best_model.predict(self.X_test)
-        rmse = np.sqrt(mean_squared_error(self.y_test, y_pred))
-        r2 = r2_score(self.y_test, y_pred)
+        y_pred = self.best_model.predict(X_test)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        r2 = r2_score(y_test, y_pred)
         print(f"RMSE: {rmse:.3f}")
         print(f"R-squared: {r2:.3f}")
         return y_pred, rmse, r2

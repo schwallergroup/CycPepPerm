@@ -18,7 +18,9 @@ class DataProcessing:
 
     def __init__(
         self,
-        datapath="data/Cyclic_peptide_membrane_permeability_random80percent.ods",
+        datapath=os.path.join(
+            DATA_PATH,
+            "Cyclic_peptide_membrane_permeability_random80percent.ods"),
         target_label="CAPA [1 µM]",
         smiles_label="SMILES",
     ):
@@ -37,6 +39,8 @@ class DataProcessing:
         self.data = None
         self.df_mordred = None
         self.calculator = Calculator(descriptors, ignore_3D=True)
+        print(f'Target column: {self.target_label}')
+        print(f'SMILES column: {self.smiles_label}')
 
     def read_data(self):
         """
@@ -52,6 +56,8 @@ class DataProcessing:
 
         if self.target_label in self.data.columns:
             self.data.rename(columns={self.target_label: "target"}, inplace=True)
+        else:
+            print(f'No target column {self.target_label} found.')
         self.data.rename(columns={self.smiles_label: "SMILES"}, inplace=True)
 
         # drop irrelevant columns for training
