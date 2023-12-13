@@ -9,19 +9,19 @@ from sklearn.metrics import mean_squared_error, r2_score
 from xgboost import XGBRegressor
 import shap
 
-from cyc_pep_perm.data.paths import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW_
+from cyc_pep_perm.data.paths import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW
 
 
 PARAMS = {
-    'max_depth': [3, 4, 5, 8, 10],
-    'learning_rate': [0.01, 0.05, 0.1, 0.15, 0.2],
+    # 'max_depth': [3, 4, 5, 8, 10],
+    # 'learning_rate': [0.01, 0.05, 0.1, 0.15, 0.2],
     'n_estimators': [100, 200, 300, 400, 500],
-    'reg_alpha': [0.01, 0.05, 0.1, 0.15, 0.2],
-    'reg_lambda': [0.01, 0.05, 0.1, 0.15, 0.2],
-    'min_child_weight': [1, 2, 5, 8, 10],
-    'gamma': [0.01, 0.05, 0.1, 0.15, 0.2],
-    'subsample': [0.01, 0.1, 0.2],
-    'colsample_bytree': [0.01, 0.1, 0.2]
+    # 'reg_alpha': [0.01, 0.05, 0.1, 0.15, 0.2],
+    # 'reg_lambda': [0.01, 0.05, 0.1, 0.15, 0.2],
+    # 'min_child_weight': [1, 2, 5, 8, 10],
+    # 'gamma': [0.01, 0.05, 0.1, 0.15, 0.2],
+    # 'subsample': [0.01, 0.1, 0.2],
+    # 'colsample_bytree': [0.01, 0.1, 0.2]
 }
 
 
@@ -49,7 +49,7 @@ class XGB:
 
     def train(
         self,
-        datapath: str = TRAIN_RANDOM_DW_,
+        datapath: str = TRAIN_RANDOM_DW,
         params: Dict[str, List[Any]] = PARAMS,
         savepath: str = MODEL_XGB_RANDOM_DW
     ) -> XGBRegressor:

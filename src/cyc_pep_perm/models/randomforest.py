@@ -9,16 +9,16 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 import shap
 
-from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW_
+from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
 
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
-    "max_features": ["sqrt", "log2", 1.0],  # features to consider at every split
-    "max_depth": [5, 10, 20, 30],  # maximum depth of tree
-    "min_samples_split": [2, 5, 10, 20],  # min samples required to split a node
-    "min_samples_leaf": [1, 2, 4, 8],  # min samples required to be at a leaf node
-    "bootstrap": [True, False],  # method of selecting samples for training each tree
+    # "max_features": ["sqrt", "log2", 1.0],  # features to consider at every split
+    # "max_depth": [5, 10, 20, 30],  # maximum depth of tree
+    # "min_samples_split": [2, 5, 10, 20],  # min samples required to split a node
+    # "min_samples_leaf": [1, 2, 4, 8],  # min samples required to be at a leaf node
+    # "bootstrap": [True, False],  # method of selecting samples for training each tree
 }
 
 
@@ -47,7 +47,7 @@ class RF:
 
     def train(
         self,
-        datapath: str = TRAIN_RANDOM_DW_,
+        datapath: str = TRAIN_RANDOM_DW,
         params: Dict[str, List[Any]] = PARAMS,
         savepath: str = MODEL_RF_RANDOM_DW
     ) -> RandomForestRegressor:

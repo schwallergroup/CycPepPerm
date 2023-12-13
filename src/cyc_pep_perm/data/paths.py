@@ -6,7 +6,7 @@ import os
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 DATA_PATH = os.path.join(ROOT_PATH, "data")
-TRAIN_RANDOM_DW_ = os.path.join(
+TRAIN_RANDOM_DW = os.path.join(
     DATA_PATH, "Cyclic_peptide_membrane_permeability_random80percent.csv"
 )
 TRAIN_RANDOM_MORDRED = os.path.join(

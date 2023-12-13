@@ -61,7 +61,10 @@ class DataProcessing:
         self.data.rename(columns={self.smiles_label: "SMILES"}, inplace=True)
 
         # drop irrelevant columns for training
-        self.data = self.data[["SMILES", "target"] + FEATURES_DW]
+        if "target" in self.data.columns:
+            self.data = self.data[["SMILES", "target"] + FEATURES_DW]
+        else:
+            self.data = self.data[["SMILES"] + FEATURES_DW]
 
         new_filepath = os.path.join(
             DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
