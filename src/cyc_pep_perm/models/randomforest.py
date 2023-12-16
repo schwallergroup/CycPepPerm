@@ -202,7 +202,7 @@ class RF:
         print(f"R-squared: {r2:.3f}")
         return y_pred, rmse, r2
 
-    def shap_explain(self, X: pd.DataFrame = None) -> np.ndarray:
+    def shap_explain(self, X: np.ndarray = None) -> np.ndarray:
         """
         Generates SHAP (SHapley Additive exPlanations) values for the trained model.
 
@@ -222,9 +222,9 @@ class RF:
         assert self.best_model is not None, "Best model not found - load or train model"
         if X is None:
             X = self.X
-        assert self.X is not None, "Data not found - load or train model"
+        assert X is not None, "Data not found - load or train model"
         explainer = shap.Explainer(self.best_model)
-        shap_values = explainer(self.X)
+        shap_values = explainer(X)
 
         shap.summary_plot(shap_values)
         return shap_values
