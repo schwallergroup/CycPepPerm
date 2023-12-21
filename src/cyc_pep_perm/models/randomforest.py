@@ -49,7 +49,8 @@ class RF:
         self,
         datapath: str = TRAIN_RANDOM_DW,
         params: Dict[str, List[Any]] = PARAMS,
-        savepath: str = MODEL_RF_RANDOM_DW
+        savepath: str = MODEL_RF_RANDOM_DW,
+        seed: int = 42,
     ) -> RandomForestRegressor:
         """
         Trains a random forest regressor model.
@@ -66,6 +67,9 @@ class RF:
         Raises:
             AssertionError: If the specified datapath does not exist.
         """
+        # Set seed
+        np.random.seed(seed)
+
         # Data
         self.datapath = datapath
         assert os.path.exists(self.datapath), "File does not exist"
@@ -77,7 +81,7 @@ class RF:
         model = RandomForestRegressor()
 
         # K-fold cross validation
-        kf = KFold(n_splits=8, shuffle=True)
+        kf = KFold(n_splits=8, shuffle=True, random_state=seed)
 
         # Gridsearch
         gs = GridSearchCV(
