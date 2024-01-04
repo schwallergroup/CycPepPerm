@@ -1,16 +1,15 @@
-import pickle
 import os
-from typing import Dict, List, Any
+import pickle
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.ensemble import RandomForestRegressor
 import shap
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV, KFold
 
 from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
-
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
@@ -35,6 +34,7 @@ class RF:
         forest regressor model.
 
     """
+
     def __init__(self):
         """
         The constructor for RFRegressor class.

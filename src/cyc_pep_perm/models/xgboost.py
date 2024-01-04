@@ -1,21 +1,20 @@
-import pickle
 import os
-from typing import Dict, List, Any
+import pickle
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.metrics import mean_squared_error, r2_score
-from xgboost import XGBRegressor
 import shap
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV, KFold
+from xgboost import XGBRegressor
 
 from cyc_pep_perm.data.paths import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW
-
 
 PARAMS = {
     # 'max_depth': [3, 4, 5, 8, 10],
     # 'learning_rate': [0.01, 0.05, 0.1, 0.15, 0.2],
-    'n_estimators': [100, 200, 300, 400, 500],
+    "n_estimators": [100, 200, 300, 400, 500],
     # 'reg_alpha': [0.01, 0.05, 0.1, 0.15, 0.2],
     # 'reg_lambda': [0.01, 0.05, 0.1, 0.15, 0.2],
     # 'min_child_weight': [1, 2, 5, 8, 10],
@@ -37,6 +36,7 @@ class XGB:
         regressor model.
 
     """
+
     def __init__(self):
         """
         The constructor for XGBRegressor class.

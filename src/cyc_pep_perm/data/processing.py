@@ -2,8 +2,8 @@ import os
 import pickle
 
 import pandas as pd
-from pandas_ods_reader import read_ods
 from mordred import Calculator, descriptors
+from pandas_ods_reader import read_ods
 from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 
@@ -19,8 +19,8 @@ class DataProcessing:
     def __init__(
         self,
         datapath=os.path.join(
-            DATA_PATH,
-            "Cyclic_peptide_membrane_permeability_random80percent.ods"),
+            DATA_PATH, "Cyclic_peptide_membrane_permeability_random80percent.ods"
+        ),
         target_label="CAPA [1 µM]",
         smiles_label="SMILES",
     ):
@@ -39,8 +39,8 @@ class DataProcessing:
         self.data = None
         self.df_mordred = None
         self.calculator = Calculator(descriptors, ignore_3D=True)
-        print(f'Target column: {self.target_label}')
-        print(f'SMILES column: {self.smiles_label}')
+        print(f"Target column: {self.target_label}")
+        print(f"SMILES column: {self.smiles_label}")
 
     def read_data(self):
         """
@@ -57,7 +57,7 @@ class DataProcessing:
         if self.target_label in self.data.columns:
             self.data.rename(columns={self.target_label: "target"}, inplace=True)
         else:
-            print(f'No target column {self.target_label} found.')
+            print(f"No target column {self.target_label} found.")
         self.data.rename(columns={self.smiles_label: "SMILES"}, inplace=True)
 
         # drop irrelevant columns for training
@@ -66,9 +66,7 @@ class DataProcessing:
         else:
             self.data = self.data[["SMILES"] + FEATURES_DW]
 
-        new_filepath = os.path.join(
-            DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
-        )
+        new_filepath = os.path.join(DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv')
         self.data.to_csv(new_filepath, index=False)
 
         print(f"Saved data to {new_filepath}")

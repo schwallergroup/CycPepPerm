@@ -1,10 +1,12 @@
-import unittest
 import os
-import pandas as pd
+import unittest
+
 import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from cyc_pep_perm.models.randomforest import RF
+
 from cyc_pep_perm.data.paths import TRAIN_RANDOM_DW
+from cyc_pep_perm.models.randomforest import RF
 
 
 class TestRandomForest(unittest.TestCase):
@@ -29,7 +31,7 @@ class TestRandomForest(unittest.TestCase):
         self.X = df.drop(["SMILES", "target"], axis=1)
         self.y = df["target"]
         filepath = os.path.dirname(__file__)
-        self.savepath = os.path.join(filepath, 'test_models', "rf_unittest.pkl")
+        self.savepath = os.path.join(filepath, "test_models", "rf_unittest.pkl")
         self.rf.train(datapath=self.datapath, savepath=self.savepath)
 
     def test_train(self):
@@ -109,5 +111,5 @@ class TestRandomForest(unittest.TestCase):
         self.assertIsInstance(shap_values.values, np.ndarray)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -1,16 +1,15 @@
-import pickle
 import os
-from typing import Dict, List, Any
+import pickle
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.ensemble import RandomForestClassifier
 import shap
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import GridSearchCV, KFold
 
 from cyc_pep_perm.data.paths import MODEL_RFCLASS_RANDOM_DW, TRAIN_RANDOM_DW
-
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
@@ -36,6 +35,7 @@ class RFClass:
         forest classifier model.
 
     """
+
     def __init__(self):
         """
         The constructor for RFclassifier class.
