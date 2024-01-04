@@ -10,9 +10,9 @@
 <br>
 
 [![tests](https://github.com/schwallergroup/CycPepPerm/actions/workflows/tests.yml/badge.svg)](https://github.com/schwallergroup/CycPepPerm)
-[![DOI:10.1101/2020.07.15.204701](https://zenodo.org/badge/DOI/10.48550/arXiv.2304.05376.svg)](https://doi.org/10.48550/arXiv.2304.05376)
+<!-- [![DOI:10.1101/2020.07.15.204701](https://zenodo.org/badge/DOI/10.48550/arXiv.2304.05376.svg)](https://doi.org/10.48550/arXiv.2304.05376)
 [![PyPI](https://img.shields.io/pypi/v/CycPepPerm)](https://img.shields.io/pypi/v/CycPepPerm)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/CycPepPerm)](https://img.shields.io/pypi/pyversions/CycPepPerm)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/CycPepPerm)](https://img.shields.io/pypi/pyversions/CycPepPerm) -->
 [![Documentation Status](https://readthedocs.org/projects/cyc_pep_perm/badge/?version=latest)](https://cyc_pep_perm.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Cookiecutter template from @SchwallerGroup](https://img.shields.io/badge/Cookiecutter-schwallergroup-blue)](https://github.com/schwallergroup/liac-repo)
@@ -22,20 +22,60 @@
 
 
 <h1 align="center">
-  cyc_pep_perm
+  CycPepPerm
 </h1>
 
 
 <br>
 
-
 Python package to predict membrane permeability of cyclic peptides.
 
 ## 🔥 Usage
 
-> TODO show in a very small amount of space the **MOST** useful thing your package can do.
-> Make it as short as possible! You have an entire set of docs for later.
+> For some more examples on how to process data, train and evaluate the alogrithms, please consult the folder `notebooks/`.
 
+### Training
+
+Make sure to have the data ready to be used. Some simple reformating is done in the notebook `notebooks/01_data_preparation.ipynb` starting from `.ods` file with DataWarrior output.
+
+```python
+from cyc_pep_perm.models.randomforest import RF
+from cyc_pep_perm.data.paths import TRAIN_RANDOM_DW
+
+# instantiate class
+rf_regressor = RF()
+
+model = rf_regressor.train(
+    datapath = TRAIN_RANDOM_DW, # path to provided data from paper
+)
+
+y_pred, rmse, r2 = rf_regressor.evaluate()
+# will print training results, e.g.:
+>>> RMSE: 8.45
+>>> R2: 0.879
+```
+
+### Prediction
+
+```python
+from cyc_pep_perm.models.randomforest import RF
+from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
+
+# instantiate class
+rf_regressor = RF()
+
+# load trained model
+rf_regressor.load_model(
+    model_path = MODEL_RF_RANDOM_DW, # path to provided model from paper
+)
+
+# data to predict on, e.g.:
+df = pd.read_csv(TRAIN_RANDOM_DW)
+X = df.drop(columns=["SMILES"])
+
+# predict
+y_pred = rf_regressor.predict(X)
+```
 
 ## 👩‍💻 Installation
 
@@ -53,6 +93,17 @@ The most recent code and data can be installed directly from GitHub with:
 ```bash
 $ pip install git+https://github.com/schwallergroup/CycPepPerm.git
 ```
+
+<!-- dependencies -->
+### Dependencies
+
+The dependencies are listed in the file `requirements.txt` and can be installed with:
+
+```bash
+$ pip install -r requirements.txt
+```
+
+The code was built with Python 3.10 on Linux but other OS should work as well.
 
 ## ✅ Citation
 
