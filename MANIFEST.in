@@ -19,4 +19,5 @@ recursive-include data *.ods
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 
 include README.md LICENSE README.html
+include *.yml *.yaml *.toml *.ini *.cfg *.json *.txt *.rst *.md *.ipynb
 exclude tox.ini .bumpversion.cfg .readthedocs.yml .cruft.json CITATION.cff docker-compose.yml Dockerfile
