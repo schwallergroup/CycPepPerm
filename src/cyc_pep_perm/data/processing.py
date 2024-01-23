@@ -42,7 +42,7 @@ class DataProcessing:
         print(f"Target column: {self.target_label}")
         print(f"SMILES column: {self.smiles_label}")
 
-    def read_data(self):
+    def read_data(self, filename=None):
         """
         Read the data from the file and perform necessary preprocessing.
         """
@@ -66,7 +66,12 @@ class DataProcessing:
         else:
             self.data = self.data[["SMILES"] + FEATURES_DW]
 
-        new_filepath = os.path.join(DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv')
+        if filename:
+            new_filepath = os.path.join(DATA_PATH, filename)
+        else:
+            new_filepath = os.path.join(
+                DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
+            )
         self.data.to_csv(new_filepath, index=False)
 
         print(f"Saved data to {new_filepath}")

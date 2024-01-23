@@ -1,6 +1,4 @@
 
-
-
 <!-- <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/repo_logo_dark.png" width='100%'>
   <source media="(prefers-color-scheme: light)" srcset="./assets/repo_logo_light.png" width='100%'>
@@ -19,8 +17,6 @@
 [![Learn more @SchwallerGroup](https://img.shields.io/badge/Learn%20%0Amore-schwallergroup-blue)](https://schwallergroup.github.io)
 
 
-
-
 <h1 align="center">
   CycPepPerm
 </h1>
@@ -36,7 +32,7 @@ Python package to predict membrane permeability of cyclic peptides.
 
 ### Training
 
-Make sure to have the data ready to be used. Some simple reformating is done in the notebook `notebooks/01_data_preparation.ipynb` starting from `.ods` file with DataWarrior output.
+Make sure to have the data ready to be used. Some simple reformating is done in the notebook `notebooks/01_data_preparation.ipynb` starting from `.ods` file with DataWarrior output. In order to make the hyperparameter search more extensive, please look into the respective python scripts (e.g. `src/cyc_pep_perm/models/randomforest.py`) and adjust the `PARAMS` dictionary.
 
 ```python
 from cyc_pep_perm.models.randomforest import RF
@@ -105,6 +101,24 @@ $ pip install -r requirements.txt
 
 The code was built with Python 3.10 on Linux but other OS should work as well.
 
+## Data and Models
+
+All data required for reproducing the results in the paper are provided in the folder `data/`. Beware that due to the random nature of these models, the results might differ from the ones reported in the paper. The files found in `data/` are split into training and test data (randomly split 80/20) and with either the DataWarrior (dw) or the Mordred descriptors. The simple data processing can be found in the notebook `notebooks/01_data_preparation.ipynb`. The DataWarrior descriptors are computed with external software ([DataWarrior](https://openmolecules.org/datawarrior/)). The following files are provided:
+
+- `data/perm_random20_test_dw.csv` - test data with DataWarrior descriptors
+- `data/perm_random20_test_mordred.csv` - test data with Mordred descriptors
+- `data/perm_random20_test_raw.ods` - test data before processing
+- `data/perm_random80_train_dw.csv` - training data with DataWarrior descriptors
+- `data/perm_random80_train_mordred.csv` - training data with Mordred descriptors
+- `data/perm_random80_train_raw.ods` - training data before processing
+
+The models are provided in the folder `models/` and can be loaded with the `load_model()` method of the respective class. The models provided are:
+
+- `models/rf_random_dw.pkl` - Random Forest trained on DataWarrior descriptors
+- `models/rf_random_mordred.pkl` - Random Forest trained on Mordred descriptors
+- `models/xgb_random_dw.pkl` - XGBoost trained on DataWarrior descriptors
+- `models/xgb_random_mordred.pkl` - XGBoost trained on Mordred descriptors
+
 ## ✅ Citation
 
 <!-- Philippe Schwaller et al. "Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction". ACS Central Science 2019 5 (9), 1572-1583
@@ -134,8 +148,6 @@ The code was built with Python 3.10 on Linux but other OS should work as well.
 
 <details>
   <summary>See developer instructions</summary>
-
-
 
 ### 👐 Contributing
 
