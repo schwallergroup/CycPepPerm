@@ -75,31 +75,48 @@ y_pred = rf_regressor.predict(X)
 
 ## 👩‍💻 Installation
 
-<!-- Uncomment this section after your first ``tox -e finish``
-The most recent release can be installed from
-[PyPI](https://pypi.org/project/cyc_pep_perm/) with:
+<!-- py 3.12 not working -->
+<!-- get req.txt and conda.yml w/o dep -->
+<!-- write stepwise installation instructions -->
+<!-- don't forget package install -->
+The repository can be cloned from GitHub and installed with `pip` or `conda`. The code was built with Python 3.10 on Linux but other OS should work as well.
 
-```shell
-$ pip install cyc_pep_perm
-```
--->
-
-The most recent code and data can be installed directly from GitHub with:
+With conda:
 
 ```bash
-$ pip install git+https://github.com/schwallergroup/CycPepPerm.git
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda env create -f environment.yml
+$ conda activate cyc_pep_perm
 ```
 
-<!-- dependencies -->
-### Dependencies
-
-The dependencies are listed in the file `requirements.txt` and can be installed with:
+or with pip:
 
 ```bash
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda create -n cyc_pep_perm python=3.10
+$ conda activate cyc_pep_perm
 $ pip install -r requirements.txt
+$ pip install -e .
 ```
 
-The code was built with Python 3.10 on Linux but other OS should work as well.
+If the options above did not work, please try from scratch:
+
+```bash
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda create -c conda-forge -n cyc_pep_perm rdkit=2022.03.5 python=3.10
+$ conda activate cyc_pep_perm
+$ conda install -c conda-forge scikit-learn
+$ conda install -c conda-forge matplotlib
+$ conda install -c rdkit -c mordred-descriptor mordred
+$ conda install -c conda-forge xgboost
+$ pip install shap
+$ pip install -e .
+$ # if you want to run the notebooks
+$ conda install -c conda-forge jupyterlab
+```
 
 ## Data and Models
 
@@ -153,17 +170,6 @@ The models are provided in the folder `models/` and can be loaded with the `load
 
 Contributions, whether filing an issue, making a pull request, or forking, are appreciated. See
 [CONTRIBUTING.md](https://github.com/schwallergroup/CycPepPerm/blob/master/.github/CONTRIBUTING.md) for more information on getting involved.
-
-
-### Development Installation
-
-To install in development mode, use the following:
-
-```bash
-$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
-$ cd CycPepPerm
-$ pip install -e .
-```
 
 ### 🥼 Testing
 
