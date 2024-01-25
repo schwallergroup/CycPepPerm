@@ -28,7 +28,7 @@ Python package to predict membrane permeability of cyclic peptides.
 
 ## 🔥 Usage
 
-> For some more examples on how to process data, train and evaluate the alogrithms, please consult the folder `notebooks/`.
+> For some more examples on how to process data, train and evaluate the alogrithms, please consult the folder `notebooks/`. This folder also contains a notebook to perform polynomial fits as described in the paper.
 
 ### Training
 
@@ -88,6 +88,7 @@ $ git clone git+https://github.com/schwallergroup/CycPepPerm.git
 $ cd CycPepPerm
 $ conda env create -f environment.yml
 $ conda activate cyc_pep_perm
+$ pip install -e .
 ```
 
 or with pip:
@@ -109,13 +110,12 @@ $ cd CycPepPerm
 $ conda create -c conda-forge -n cyc_pep_perm rdkit=2022.03.5 python=3.10
 $ conda activate cyc_pep_perm
 $ conda install -c conda-forge scikit-learn
-$ conda install -c conda-forge matplotlib
 $ conda install -c rdkit -c mordred-descriptor mordred
 $ conda install -c conda-forge xgboost
+$ conda install -c conda-forge seaborn
 $ pip install shap
-$ pip install -e .
-$ # if you want to run the notebooks
 $ conda install -c conda-forge jupyterlab
+$ pip install -e .
 ```
 
 ## Data and Models
