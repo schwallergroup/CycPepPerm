@@ -11,9 +11,10 @@ dependencies:
   - pip=23.3.1
   - python=3.10.13
   - rdkit=2022.03.5
-  - scikit-learn=1.4.0
+  - scikit-learn=1.0.2
   - pip:
       - matplotlib==3.8.2
+      - pandas-ods-reader
       - seaborn==0.13.0
       - shap==0.44.0
       - xgboost==2.0.2
