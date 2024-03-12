@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import Any, Dict, List
+from typing import Dict
 
 import numpy as np
 import pandas as pd
@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, KFold
 
-from cyc_pep_perm.data.paths import MODEL_RFCLASS_RANDOM_DW, TRAIN_RANDOM_DW
+from cyc_pep_perm.data import MODEL_RFCLASS_RANDOM_DW, TRAIN_RANDOM_DW
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
@@ -49,7 +49,7 @@ class RFClass:
     def train(
         self,
         datapath: str = TRAIN_RANDOM_DW,
-        params: Dict[str, List[Any]] = PARAMS,
+        params: Dict[str, object] = PARAMS,
         savepath: str = MODEL_RFCLASS_RANDOM_DW,
         seed: int = 42,
     ) -> RandomForestClassifier:

@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-from cyc_pep_perm.data.paths import TRAIN_RANDOM_DW
-from cyc_pep_perm.models.randomforest import RF
+from cyc_pep_perm.data import TRAIN_RANDOM_DW
+from cyc_pep_perm.models import RF
 
 
 class TestRandomForest(unittest.TestCase):

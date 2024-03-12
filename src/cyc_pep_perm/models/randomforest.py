@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 
-from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
+from cyc_pep_perm.data import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees

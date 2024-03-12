@@ -9,7 +9,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 from xgboost import XGBRegressor
 
-from cyc_pep_perm.data.paths import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW
+from cyc_pep_perm.data import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW
 
 PARAMS = {
     # 'max_depth': [3, 4, 5, 8, 10],

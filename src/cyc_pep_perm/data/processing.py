@@ -7,8 +7,7 @@ from pandas_ods_reader import read_ods
 from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 
-from cyc_pep_perm.data.descriptors import FEATURES_DW, MORDRED_DESCS
-from cyc_pep_perm.data.paths import DATA_PATH
+from cyc_pep_perm.data import DATA_PATH, FEATURES_DW, MORDRED_DESCS
 
 
 class DataProcessing:
