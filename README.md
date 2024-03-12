@@ -109,12 +109,13 @@ $ git clone git+https://github.com/schwallergroup/CycPepPerm.git
 $ cd CycPepPerm
 $ conda create -c conda-forge -n cyc_pep_perm rdkit=2022.03.5 python=3.10
 $ conda activate cyc_pep_perm
-$ conda install -c conda-forge scikit-learn
+$ conda install -c conda-forge scikit-learn=1.0.2
 $ conda install -c rdkit -c mordred-descriptor mordred
 $ conda install -c conda-forge xgboost
 $ conda install -c conda-forge seaborn
 $ pip install shap
 $ conda install -c conda-forge jupyterlab
+$ pip isntall pandas-ods-reader
 $ pip install -e .
 ```
 
