@@ -11,7 +11,6 @@
 <!-- [![DOI:10.1101/2020.07.15.204701](https://zenodo.org/badge/DOI/10.48550/arXiv.2304.05376.svg)](https://doi.org/10.48550/arXiv.2304.05376)
 [![PyPI](https://img.shields.io/pypi/v/CycPepPerm)](https://img.shields.io/pypi/v/CycPepPerm)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/CycPepPerm)](https://img.shields.io/pypi/pyversions/CycPepPerm) -->
-[![Documentation Status](https://readthedocs.org/projects/cyc_pep_perm/badge/?version=latest)](https://cyc_pep_perm.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Cookiecutter template from @SchwallerGroup](https://img.shields.io/badge/Cookiecutter-schwallergroup-blue)](https://github.com/schwallergroup/liac-repo)
 [![Learn more @SchwallerGroup](https://img.shields.io/badge/Learn%20%0Amore-schwallergroup-blue)](https://schwallergroup.github.io)
@@ -26,13 +25,89 @@
 
 Python package to predict membrane permeability of cyclic peptides.
 
+## 👩‍💻 Installation
+
+We provide the code as a python package, so the only thing you need is to install it. We recommend creating a new conda environment for that (otherwise skip first line.
+
+```bash
+$ conda create -n cyc-pep-perm python=3.10
+$ pip install cyc_pep_perm
+```
+
+### 🛠️ For Developers
+<details>
+  <summary>See detailed installation instructions</summary>
+The repository can be cloned from GitHub and installed with `pip` or `conda`. The code was built with Python 3.10 on Linux but other OS should work as well.
+
+With conda:
+
+```bash
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda env create -f environment.yml
+$ conda activate cyc_pep_perm
+$ pip install -e .
+```
+
+or with pip:
+
+```bash
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda create -n cyc_pep_perm python=3.10
+$ conda activate cyc_pep_perm
+$ pip install -r requirements.txt
+$ pip install -e .
+```
+
+If the options above did not work, please try from scratch:
+
+```bash
+$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
+$ cd CycPepPerm
+$ conda create -c conda-forge -n cyc_pep_perm rdkit=2022.03.5 python=3.10
+$ conda activate cyc_pep_perm
+$ conda install -c conda-forge scikit-learn=1.0.2
+$ conda install -c rdkit -c mordred-descriptor mordred
+$ conda install -c conda-forge xgboost
+$ conda install -c conda-forge seaborn
+$ pip install shap
+$ conda install -c conda-forge jupyterlab
+$ pip isntall pandas-ods-reader
+$ pip install -e .
+```
+</details>
+
 ## 🔥 Usage
 
 > For some more examples on how to process data, train and evaluate the alogrithms, please consult the folder `notebooks/`. This folder also contains a notebook to perform polynomial fits as described in the paper.
 
+### Data preprocessing
+
+Here we showcase how to handle the data as for our use-case. Some simple reformating is done (see also the notebook `notebooks/01_data_preparation.ipynb`) starting from `.ods` file with DataWarrior output.
+
+```python
+import os
+
+from cyc_pep_perm.data.paths import DATA_PATH
+from cyc_pep_perm.data.processing import DataProcessing
+
+# this can also be a .csv input
+datapath = os.path.join(DATA_PATH, "perm_random80_train_raw.ods")
+
+# instantiate the class and make sure the columns match your inputed file - otherwise change arguments
+dp = DataProcessing(datapath=datapath)
+
+# make use of precomputed descriptors from DataWarrior
+df = dp.read_data(filename="perm_random80_train_dw.csv")
+
+# calculate Mordred deescripttors
+df_mordred = dp.calc_mordred(filename="perm_random80_train_mordred.csv")
+```
+
 ### Training
 
-Make sure to have the data ready to be used. Some simple reformating is done in the notebook `notebooks/01_data_preparation.ipynb` starting from `.ods` file with DataWarrior output. In order to make the hyperparameter search more extensive, please look into the respective python scripts (e.g. `src/cyc_pep_perm/models/randomforest.py`) and adjust the `PARAMS` dictionary.
+Make sure to have the data ready to be used. In order to make the hyperparameter search more extensive, please look into the respective python scripts (e.g. `src/cyc_pep_perm/models/randomforest.py`) and adjust the `PARAMS` dictionary.
 
 ```python
 from cyc_pep_perm.models.randomforest import RF
@@ -73,52 +148,6 @@ X = df.drop(columns=["SMILES"])
 y_pred = rf_regressor.predict(X)
 ```
 
-## 👩‍💻 Installation
-
-<!-- py 3.12 not working -->
-<!-- get req.txt and conda.yml w/o dep -->
-<!-- write stepwise installation instructions -->
-<!-- don't forget package install -->
-The repository can be cloned from GitHub and installed with `pip` or `conda`. The code was built with Python 3.10 on Linux but other OS should work as well.
-
-With conda:
-
-```bash
-$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
-$ cd CycPepPerm
-$ conda env create -f environment.yml
-$ conda activate cyc_pep_perm
-$ pip install -e .
-```
-
-or with pip:
-
-```bash
-$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
-$ cd CycPepPerm
-$ conda create -n cyc_pep_perm python=3.10
-$ conda activate cyc_pep_perm
-$ pip install -r requirements.txt
-$ pip install -e .
-```
-
-If the options above did not work, please try from scratch:
-
-```bash
-$ git clone git+https://github.com/schwallergroup/CycPepPerm.git
-$ cd CycPepPerm
-$ conda create -c conda-forge -n cyc_pep_perm rdkit=2022.03.5 python=3.10
-$ conda activate cyc_pep_perm
-$ conda install -c conda-forge scikit-learn=1.0.2
-$ conda install -c rdkit -c mordred-descriptor mordred
-$ conda install -c conda-forge xgboost
-$ conda install -c conda-forge seaborn
-$ pip install shap
-$ conda install -c conda-forge jupyterlab
-$ pip isntall pandas-ods-reader
-$ pip install -e .
-```
-
 ## Data and Models
 
 All data required for reproducing the results in the paper are provided in the folder `data/`. Beware that due to the random nature of these models, the results might differ from the ones reported in the paper. The files found in `data/` are split into training and test data (randomly split 80/20) and with either the DataWarrior (dw) or the Mordred descriptors. The simple data processing can be found in the notebook `notebooks/01_data_preparation.ipynb`. The DataWarrior descriptors are computed with external software ([DataWarrior](https://openmolecules.org/datawarrior/)). The following files are provided:
@@ -139,17 +168,6 @@ The models are provided in the folder `models/` and can be loaded with the `load
 
 ## ✅ Citation
 
-<!-- Philippe Schwaller et al. "Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction". ACS Central Science 2019 5 (9), 1572-1583
-@article{doi:10.1021/acscentsci.9b00576,
-    author = {Schwaller, Philippe and Laino, Teodoro and Gaudin, Théophile and Bolgar, Peter and Hunter, Christopher A. and Bekas, Costas and Lee, Alpha A.},
-    title = {Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction},
-    journal = {ACS Central Science},
-    volume = {5},
-    number = {9},
-    pages = {1572-1583},
-    year = {2019},
-    doi = {10.1021/acscentsci.9b00576},
-} -->
 ```bibtex
 @Misc{this_repo,
   author = { Rebecca M Neeser },
