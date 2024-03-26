@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
 import pandas as pd
@@ -49,10 +49,11 @@ class XGB:
 
     def train(
         self,
-        datapath: str = TRAIN_RANDOM_DW,
+        datapath: Union[str, pd.DataFrame] = TRAIN_RANDOM_DW,
         params: Dict[str, List[Any]] = PARAMS,
         savepath: str = MODEL_XGB_RANDOM_DW,
         seed: int = 42,
+        n_folds: int = 8,
     ) -> XGBRegressor:
         """
         Trains a XGBoost regressor model.
@@ -74,8 +75,11 @@ class XGB:
 
         # Data
         self.datapath = datapath
-        assert os.path.exists(self.datapath), "File does not exist"
-        self.data = pd.read_csv(self.datapath)
+        if isinstance(self.datapath, pd.DataFrame):
+            self.data = self.datapath
+        else:
+            assert os.path.exists(self.datapath), "File does not exist"
+            self.data = pd.read_csv(self.datapath)
         self.X = self.data.drop(["SMILES", "target"], axis=1)
         self.y = self.data["target"]
 
@@ -83,7 +87,7 @@ class XGB:
         model = XGBRegressor()
 
         # K-fold cross validation
-        kf = KFold(n_splits=8, shuffle=True, random_state=seed)
+        kf = KFold(n_splits=n_folds, shuffle=True, random_state=seed)
 
         # Gridsearch
         gs = GridSearchCV(
@@ -179,7 +183,7 @@ class XGB:
             self.best_model = pickle.load(f)
         return self.best_model
 
-    def test(self, testpath: str) -> tuple:
+    def test(self, testpath: Union[str, pd.DataFrame]) -> tuple:
         """
         Evaluates the trained model on a test dataset.
 
@@ -195,9 +199,11 @@ class XGB:
             the best model is not found (not loaded or trained).
 
         """
-
-        assert os.path.exists(testpath), "File does not exist"
-        test_data = pd.read_csv(testpath)
+        if isinstance(testpath, pd.DataFrame):
+            test_data = testpath
+        else:
+            assert os.path.exists(testpath), "File does not exist"
+            test_data = pd.read_csv(testpath)
         X_test = test_data.drop(["SMILES", "target"], axis=1)
         y_test = test_data["target"]
         assert self.best_model is not None, "Best model not found - load or train model"

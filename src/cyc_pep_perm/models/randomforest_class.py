@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import Dict
+from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -48,10 +48,11 @@ class RFClass:
 
     def train(
         self,
-        datapath: str = TRAIN_RANDOM_DW,
+        datapath: Union[str, pd.DataFrame] = TRAIN_RANDOM_DW,
         params: Dict[str, object] = PARAMS,
         savepath: str = MODEL_RFCLASS_RANDOM_DW,
         seed: int = 42,
+        n_folds: int = 8,
     ) -> RandomForestClassifier:
         """
         Trains a random forest classifier model.
@@ -73,8 +74,11 @@ class RFClass:
 
         # Data
         self.datapath = datapath
-        assert os.path.exists(self.datapath), "File does not exist"
-        self.data = pd.read_csv(self.datapath)
+        if isinstance(self.datapath, pd.DataFrame):
+            self.data = self.datapath
+        else:
+            assert os.path.exists(self.datapath), "File does not exist"
+            self.data = pd.read_csv(self.datapath)
         self.X = self.data.drop(["SMILES", "target"], axis=1)
         self.y_cont = self.data["target"]
         self.y = self.y_cont.apply(lambda x: 1 if x > 50 else 0)
@@ -83,7 +87,7 @@ class RFClass:
         model = RandomForestClassifier()
 
         # K-fold cross validation
-        kf = KFold(n_splits=8, shuffle=True, random_state=seed)
+        kf = KFold(n_splits=n_folds, shuffle=True, random_state=seed)
 
         # Gridsearch
         gs = GridSearchCV(
@@ -179,7 +183,7 @@ class RFClass:
             self.best_model = pickle.load(f)
         return self.best_model
 
-    def test(self, testpath: str) -> tuple:
+    def test(self, testpath: Union[str, pd.DataFrame]) -> tuple:
         """
         Evaluates the trained model on a test dataset.
 
@@ -195,9 +199,11 @@ class RFClass:
             the best model is not found (not loaded or trained).
 
         """
-
-        assert os.path.exists(testpath), "File does not exist"
-        test_data = pd.read_csv(testpath)
+        if isinstance(testpath, pd.DataFrame):
+            test_data = testpath
+        else:
+            assert os.path.exists(testpath), "File does not exist"
+            test_data = pd.read_csv(testpath)
         self.X_test = test_data.drop(["SMILES", "target"], axis=1)
         self.y_test = test_data["target"]
         assert self.best_model is not None, "Best model not found - load or train model"

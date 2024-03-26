@@ -5,8 +5,125 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-from cyc_pep_perm.data import TRAIN_RANDOM_DW
 from cyc_pep_perm.models import RF
+
+# make tet data so independent of the data file
+columns = [
+    "SMILES",
+    "target",
+    "MW",
+    "cLogP",
+    "cLogS",
+    "HBA",
+    "HBD",
+    "Total Surface Area",
+    "Rel. PSA",
+    "PSA",
+    "Rot. Bonds",
+    "Amides",
+]
+data = [
+    [
+        "CC(C)[C@@H](C(NCCSCc1cccc(CSCCC(N[C@@H](CC(NCCOCCOCCCCCCCl)=O)C(NCc2cc3ccc2)=O)=O)n1)=O)NC3=O",
+        41.206681848330696,
+        821.5,
+        3.0452,
+        -6.508,
+        13.0,
+        5.0,
+        644.43,
+        0.29243,
+        227.45,
+        15.0,
+        5.0,
+    ],
+    [
+        "O=C(C[C@@H](C(N[C@H](CCCC1)[C@@H]1C(N(CCC1)C[C@H]1C(NCCSCc1cccc(CSCC2)n1)=O)=O)=O)NC2=O)NCCOCCOCCCCCCCl",
+        39.74796989085007,
+        825.53,
+        2.9212,
+        -6.027,
+        13.0,
+        4.0,
+        640.81,
+        0.28174,
+        218.66,
+        14.0,
+        5.0,
+    ],
+    [
+        "O=C(C[C@@H](C(NCC(NC(CC1)CCC1CC(NCCSCc1cccc(CSCC2)n1)=O)=O)=O)NC2=O)NCCOCCOCCCCCCCl",
+        24.527463251624283,
+        785.47,
+        2.1131,
+        -5.843,
+        13.0,
+        5.0,
+        615.45,
+        0.3062,
+        227.45,
+        14.0,
+        5.0,
+    ],
+    [
+        "OC[C@@H](C(NCCSCc1cccc(CSCCC(N[C@@H](CC(NCCOCCOCCCCCCCl)=O)C(N[C@H]2Cc3c[nH]cn3)=O)=O)n1)=O)NC2=O",
+        13.128624730382676,
+        813.44,
+        -0.312,
+        -4.362,
+        16.0,
+        7.0,
+        628.35,
+        0.36048,
+        276.36,
+        17.0,
+        5.0,
+    ],
+    [
+        "CC(C)[C@@H](C(NCCSCc1cccc(CSCCC(N[C@@H](CC(NCCOCCOCCCCCCCl)=O)C(N[C@H]2Cc3ccccc3)=O)=O)n1)=O)NC2=O",
+        86.64762792782881,
+        835.53,
+        3.0732,
+        -6.46,
+        13.0,
+        5.0,
+        656.93,
+        0.28686,
+        227.45,
+        17.0,
+        5.0,
+    ],
+    [
+        "OC[C@@H](C(NC(CC1)CCC1CC(NCCSCc1cccc(CSCCC(N[C@H]2CC(NCCOCCOCCCCCCCl)=O)=O)n1)=O)=O)NC2=O",
+        26.662660910881982,
+        815.49,
+        1.5457,
+        -5.714,
+        14.0,
+        6.0,
+        634.3,
+        0.31775,
+        247.68,
+        15.0,
+        5.0,
+    ],
+    [
+        "C[C@@H](C(NCCSCc1cccc(CSCCC(N[C@@H](CC(NCCOCCOCCCCCCCl)=O)C(N[C@H]2[C@H]3CCCC2)=O)=O)n1)=O)NC3=O",
+        71.64447241968833,
+        785.47,
+        2.018,
+        -5.951,
+        13.0,
+        5.0,
+        612.69,
+        0.30758,
+        227.45,
+        14.0,
+        5.0,
+    ],
+]
+
+DF = pd.DataFrame(data, columns=columns)
 
 
 class TestRandomForest(unittest.TestCase):
@@ -26,13 +143,12 @@ class TestRandomForest(unittest.TestCase):
         - None
         """
         self.rf = RF()
-        self.datapath = TRAIN_RANDOM_DW
-        df = pd.read_csv(self.datapath)
-        self.X = df.drop(["SMILES", "target"], axis=1)
-        self.y = df["target"]
+        self.df = DF
+        self.X = self.df.drop(["SMILES", "target"], axis=1)
+        self.y = self.df["target"]
         filepath = os.path.dirname(__file__)
         self.savepath = os.path.join(filepath, "test_models", "rf_unittest.pkl")
-        self.rf.train(datapath=self.datapath, savepath=self.savepath)
+        self.rf.train(datapath=self.df, savepath=self.savepath, n_folds=2)
 
     def test_train(self):
         """
@@ -94,7 +210,7 @@ class TestRandomForest(unittest.TestCase):
             None
         """
         self.rf.load(self.savepath)
-        y_pred, rmse, r2 = self.rf.test(self.datapath)
+        y_pred, rmse, r2 = self.rf.test(self.df)
         self.assertIsInstance(y_pred, np.ndarray)
         self.assertIsInstance(rmse, float)
         self.assertIsInstance(r2, float)
