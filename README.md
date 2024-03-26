@@ -82,6 +82,8 @@ $ pip install -e .
 
 > For some more examples on how to process data, train and evaluate the alogrithms, please consult the folder `notebooks/`. This folder also contains a notebook to perform polynomial fits as described in the paper.
 
+All data paths in the following examples are taken from the hard-coded paths that work when one clones this repository. If you use the python package and download the data separately, please change the paths accordingly.
+
 ### Data preprocessing
 
 Here we showcase how to handle the data as for our use-case. Some simple reformating is done (see also the notebook `notebooks/01_data_preparation.ipynb`) starting from `.ods` file with DataWarrior output.
@@ -93,7 +95,7 @@ from cyc_pep_perm.data.paths import DATA_PATH
 from cyc_pep_perm.data.processing import DataProcessing
 
 # this can also be a .csv input
-datapath = os.path.join(DATA_PATH, "perm_random80_train_raw.ods")
+datapath = os.path.join(DATA_PATH, "perm_random80_train_raw.ods")  # adapt to your path!
 
 # instantiate the class and make sure the columns match your inputed file - otherwise change arguments
 dp = DataProcessing(datapath=datapath)
@@ -117,7 +119,7 @@ from cyc_pep_perm.data.paths import TRAIN_RANDOM_DW
 rf_regressor = RF()
 
 model = rf_regressor.train(
-    datapath = TRAIN_RANDOM_DW, # path to provided data from paper
+    datapath = TRAIN_RANDOM_DW, # path to provided data from paper - adapt to your path!
 )
 
 y_pred, rmse, r2 = rf_regressor.evaluate()
@@ -137,7 +139,7 @@ rf_regressor = RF()
 
 # load trained model
 rf_regressor.load_model(
-    model_path = MODEL_RF_RANDOM_DW, # path to provided model from paper
+    model_path = MODEL_RF_RANDOM_DW, # path to provided data from paper - adapt to your path!
 )
 
 # data to predict on, e.g.:
