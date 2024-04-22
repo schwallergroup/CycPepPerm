@@ -87,16 +87,17 @@ All data paths in the following examples are taken from the hard-coded paths tha
 
 ### Data preprocessing
 
-Here we showcase how to handle the data as for our use-case. Some simple reformating is done (see also the notebook `notebooks/01_data_preparation.ipynb`) starting from `.ods` file with DataWarrior output.
+Here we showcase how to handle the data as for our use-case. Some simple reformating is done (see also the notebook `notebooks/01_data_preparation.ipynb`) starting from `.ods` file with DataWarrior output (for data see [Data and Models](#data-and-models)).
 
 ```python
 import os
 
-from cyc_pep_perm.data.paths import DATA_PATH
 from cyc_pep_perm.data.processing import DataProcessing
 
+data_dir = "/path/to/data/folder" # ADAPT TO YOUR PATH!
+
 # this can also be a .csv input
-datapath = os.path.join(DATA_PATH, "perm_random80_train_raw.ods")  # adapt to your path!
+datapath = os.path.join(data_dir, "perm_random80_train_raw.ods")
 
 # instantiate the class and make sure the columns match your inputed file - otherwise change arguments
 dp = DataProcessing(datapath=datapath)
@@ -113,14 +114,18 @@ df_mordred = dp.calc_mordred(filename="perm_random80_train_mordred.csv")
 Make sure to have the data ready to be used. In order to make the hyperparameter search more extensive, please look into the respective python scripts (e.g. `src/cyc_pep_perm/models/randomforest.py`) and adjust the `PARAMS` dictionary.
 
 ```python
+import os
+
 from cyc_pep_perm.models.randomforest import RF
-from cyc_pep_perm.data.paths import TRAIN_RANDOM_DW
+
+data_dir = "/path/to/data/folder" # ADAPT TO YOUR PATH!
+train_data = os.path.join(data_dir, "perm_random80_train_dw.csv")
 
 # instantiate class
 rf_regressor = RF()
 
 model = rf_regressor.train(
-    datapath = TRAIN_RANDOM_DW, # path to provided data from paper - adapt to your path!
+    datapath = train_data,
 )
 
 y_pred, rmse, r2 = rf_regressor.evaluate()
@@ -132,19 +137,25 @@ y_pred, rmse, r2 = rf_regressor.evaluate()
 ### Prediction
 
 ```python
+import os
+
 from cyc_pep_perm.models.randomforest import RF
-from cyc_pep_perm.data.paths import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
+
+data_dir = "/path/to/data/folder" # ADAPT TO YOUR PATH!
+train_data = os.path.join(data_dir, "perm_random80_train_dw.csv")
+model_dir = "/path/to/model/folder" # ADAPT TO YOUR PATH!
+rf_model_trained = os.path.join(model_dir, "rf_random_dw.pkl")
 
 # instantiate class
 rf_regressor = RF()
 
 # load trained model
 rf_regressor.load_model(
-    model_path = MODEL_RF_RANDOM_DW, # path to provided data from paper - adapt to your path!
+    model_path = rf_model_trained,
 )
 
 # data to predict on, e.g.:
-df = pd.read_csv(TRAIN_RANDOM_DW)
+df = pd.read_csv(train_data)
 X = df.drop(columns=["SMILES"])
 
 # predict
