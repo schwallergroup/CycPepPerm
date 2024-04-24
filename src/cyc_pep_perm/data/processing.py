@@ -21,6 +21,8 @@ class DataProcessing:
         datapath: str,
         target_label: str = "CAPA [1 µM]",
         smiles_label: str = "SMILES",
+        data: Optional[pd.DataFrame] = None,
+        df_mordred: Optional[pd.DataFrame] = None,
     ):
         """
         Initialize the DataProcessing object.
@@ -35,8 +37,8 @@ class DataProcessing:
         self.data_dir = os.path.dirname(self.datapath)
         self.target_label = target_label
         self.smiles_label = smiles_label
-        self.data = None
-        self.df_mordred = None
+        self.data = data
+        self.df_mordred = df_mordred
         self.calculator = Calculator(descriptors, ignore_3D=True)
         print(f"Target column: {self.target_label}")
         print(f"SMILES column: {self.smiles_label}")
@@ -92,8 +94,9 @@ class DataProcessing:
         self.df_mordred = self.df_mordred[MORDRED_DESCS]
 
         self.df_mordred["SMILES"] = self.smiles
-        if "target" in self.data.columns:
-            self.df_mordred["target"] = self.data["target"]
+        if self.data is not None and isinstance(self.data, pd.DataFrame):
+            if "target" in self.data.columns:
+                self.df_mordred["target"] = self.data["target"]
 
         if not filename:
             filename = os.path.join(
