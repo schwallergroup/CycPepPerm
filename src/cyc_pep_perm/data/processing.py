@@ -7,7 +7,7 @@ from pandas_ods_reader import read_ods
 from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 
-from cyc_pep_perm.data import DATA_PATH, FEATURES_DW, MORDRED_DESCS
+from cyc_pep_perm.data import FEATURES_DW, MORDRED_DESCS
 
 
 class DataProcessing:
@@ -17,11 +17,9 @@ class DataProcessing:
 
     def __init__(
         self,
-        datapath=os.path.join(
-            DATA_PATH, "Cyclic_peptide_membrane_permeability_random80percent.ods"
-        ),
-        target_label="CAPA [1 µM]",
-        smiles_label="SMILES",
+        datapath: str,
+        target_label: str = "CAPA [1 µM]",
+        smiles_label: str = "SMILES",
     ):
         """
         Initialize the DataProcessing object.
@@ -33,6 +31,7 @@ class DataProcessing:
         """
         self.datapath = datapath
         assert os.path.exists(self.datapath), "File does not exist"
+        self.data_dir = os.path.dirname(self.datapath)
         self.target_label = target_label
         self.smiles_label = smiles_label
         self.data = None
@@ -41,7 +40,7 @@ class DataProcessing:
         print(f"Target column: {self.target_label}")
         print(f"SMILES column: {self.smiles_label}")
 
-    def read_data(self, filename=None):
+    def read_data(self, filename: str = None):
         """
         Read the data from the file and perform necessary preprocessing.
         """
@@ -66,10 +65,10 @@ class DataProcessing:
             self.data = self.data[["SMILES"] + FEATURES_DW]
 
         if filename:
-            new_filepath = os.path.join(DATA_PATH, filename)
+            new_filepath = os.path.join(self.data_dir, filename)
         else:
             new_filepath = os.path.join(
-                DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
+                self.data_dir, f'{self.datapath.split("/")[-1].split(".")[0]}.csv'
             )
         self.data.to_csv(new_filepath, index=False)
 
@@ -97,7 +96,8 @@ class DataProcessing:
 
         if not filename:
             filename = os.path.join(
-                DATA_PATH, f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+                self.data_dir,
+                f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
             )
         self.df_mordred.to_csv(filename, index=False)
 
@@ -121,7 +121,7 @@ class DataProcessing:
             data = pd.read_csv(raw_data)
             scaler_path = raw_data.split(".")[0] + "_scaler.pkl"
         else:
-            scaled_folder = os.path.join(DATA_PATH, "scaled")
+            scaled_folder = os.path.join(self.data_dir, "scaled")
             basename = self.datapath.split("/")[-1].split(".")[0]
             scaler_path = os.path.join(scaled_folder, basename + "_scaler.pkl")
             raw_data = os.path.join(scaled_folder, basename + ".csv")

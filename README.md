@@ -120,12 +120,15 @@ from cyc_pep_perm.models.randomforest import RF
 
 data_dir = "/path/to/data/folder" # ADAPT TO YOUR PATH!
 train_data = os.path.join(data_dir, "perm_random80_train_dw.csv")
+model_dir = "/path/to/model/folder" # ADAPT TO YOUR PATH!
+rf_model_trained = os.path.join(model_dir, "rf_random_dw.pkl")
 
 # instantiate class
 rf_regressor = RF()
 
 model = rf_regressor.train(
     datapath = train_data,
+    savepath = rf_model_trained,
 )
 
 y_pred, rmse, r2 = rf_regressor.evaluate()
@@ -151,7 +154,7 @@ rf_regressor = RF()
 
 # load trained model
 rf_regressor.load_model(
-    model_path = rf_model_trained,
+    modelpath = rf_model_trained,
 )
 
 # data to predict on, e.g.:

@@ -9,7 +9,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 
-from cyc_pep_perm.data import MODEL_RF_RANDOM_DW, TRAIN_RANDOM_DW
 
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
@@ -47,9 +46,9 @@ class RF:
 
     def train(
         self,
-        datapath: Union[str, pd.DataFrame] = TRAIN_RANDOM_DW,
+        datapath: Union[str, pd.DataFrame],
+        savepath: str,
         params: Dict[str, List[Any]] = PARAMS,
-        savepath: str = MODEL_RF_RANDOM_DW,
         seed: int = 42,
         n_folds: int = 8,
     ) -> RandomForestRegressor:
@@ -57,10 +56,11 @@ class RF:
         Trains a random forest regressor model.
 
         Args:
-            datapath (str): The path to the training data. params (Dict[str, list]): The
-            hyperparameters for the random forest regressor model.
+            datapath (str): The path to the training data.
             savepath (str): The
             path to save the trained model.
+            params (Dict[str, list]): The
+            hyperparameters for the random forest regressor model.
 
         Returns:
             RandomForestRegressor: The best trained random forest regressor model.
@@ -105,6 +105,7 @@ class RF:
         os.makedirs(os.path.dirname(savepath), exist_ok=True)
         with open(savepath, "wb") as f:
             pickle.dump(self.best_model, f)
+        print(f"Best model saved to {savepath}")
 
         return self.best_model
 
@@ -161,7 +162,7 @@ class RF:
         y_pred = self.best_model.predict(X)
         return y_pred
 
-    def load(self, modelpath: str = MODEL_RF_RANDOM_DW) -> RandomForestRegressor:
+    def load(self, modelpath: str) -> RandomForestRegressor:
         """
         Loads a trained model from a file.
 

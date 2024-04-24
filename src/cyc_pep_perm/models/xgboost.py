@@ -9,7 +9,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 from xgboost import XGBRegressor
 
-from cyc_pep_perm.data import MODEL_XGB_RANDOM_DW, TRAIN_RANDOM_DW
 
 PARAMS = {
     # 'max_depth': [3, 4, 5, 8, 10],
@@ -49,9 +48,9 @@ class XGB:
 
     def train(
         self,
-        datapath: Union[str, pd.DataFrame] = TRAIN_RANDOM_DW,
+        datapath: Union[str, pd.DataFrame],
+        savepath: str,
         params: Dict[str, List[Any]] = PARAMS,
-        savepath: str = MODEL_XGB_RANDOM_DW,
         seed: int = 42,
         n_folds: int = 8,
     ) -> XGBRegressor:
@@ -59,10 +58,11 @@ class XGB:
         Trains a XGBoost regressor model.
 
         Args:
-            datapath (str): The path to the training data. params (Dict[str, list]): The
-            hyperparameters for the XGBoost regressor model.
+            datapath (str): The path to the training data.
             savepath (str): The
             path to save the trained model.
+            params (Dict[str, list]): The
+            hyperparameters for the XGBoost regressor model.
 
         Returns:
             XGBRegressor: The best trained XGBoost regressor model.
@@ -107,6 +107,7 @@ class XGB:
         os.makedirs(os.path.dirname(savepath), exist_ok=True)
         with open(savepath, "wb") as f:
             pickle.dump(self.best_model, f)
+        print(f"Best model saved to {savepath}")
 
         return self.best_model
 
@@ -163,7 +164,7 @@ class XGB:
         y_pred = self.best_model.predict(X)
         return y_pred
 
-    def load(self, modelpath: str = MODEL_XGB_RANDOM_DW) -> XGBRegressor:
+    def load(self, modelpath: str) -> XGBRegressor:
         """
         Loads a trained model from a file.
 
