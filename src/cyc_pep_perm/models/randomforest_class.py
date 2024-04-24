@@ -9,7 +9,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, KFold
 
-
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
     "class_weight": ["balanced_subsample"],  # class weights

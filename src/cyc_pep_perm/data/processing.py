@@ -1,5 +1,6 @@
 import os
 import pickle
+from typing import Optional
 
 import pandas as pd
 from mordred import Calculator, descriptors
@@ -40,7 +41,7 @@ class DataProcessing:
         print(f"Target column: {self.target_label}")
         print(f"SMILES column: {self.smiles_label}")
 
-    def read_data(self, filename: str = None):
+    def read_data(self, filename: Optional[str] = None):
         """
         Read the data from the file and perform necessary preprocessing.
         """
@@ -76,7 +77,7 @@ class DataProcessing:
 
         return self.data
 
-    def calc_mordred(self, filename=None):
+    def calc_mordred(self, filename: Optional[str] = None):
         """
         Calculate Mordred descriptors for the molecules and save the results to a file.
 
@@ -96,8 +97,7 @@ class DataProcessing:
 
         if not filename:
             filename = os.path.join(
-                self.data_dir,
-                f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+                self.data_dir, f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
             )
         self.df_mordred.to_csv(filename, index=False)
 

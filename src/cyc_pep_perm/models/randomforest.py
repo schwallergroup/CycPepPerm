@@ -9,7 +9,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 
-
 PARAMS = {
     "n_estimators": [100, 200, 300, 400, 500],  # number of trees
     # "max_features": ["sqrt", "log2", 1.0],  # features to consider at every split

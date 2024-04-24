@@ -9,7 +9,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold
 from xgboost import XGBRegressor
 
-
 PARAMS = {
     # 'max_depth': [3, 4, 5, 8, 10],
     # 'learning_rate': [0.01, 0.05, 0.1, 0.15, 0.2],
