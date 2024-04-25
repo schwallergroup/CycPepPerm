@@ -145,7 +145,7 @@ import os
 from cyc_pep_perm.models.randomforest import RF
 
 data_dir = "/path/to/data/folder" # ADAPT TO YOUR PATH!
-train_data = os.path.join(data_dir, "perm_random80_train_dw.csv")
+train_data = os.path.join(data_dir, "perm_random20_test_dw.csv")
 model_dir = "/path/to/model/folder" # ADAPT TO YOUR PATH!
 rf_model_trained = os.path.join(model_dir, "rf_random_dw.pkl")
 
@@ -153,7 +153,7 @@ rf_model_trained = os.path.join(model_dir, "rf_random_dw.pkl")
 rf_regressor = RF()
 
 # load trained model
-rf_regressor.load_model(
+rf_regressor.load(
     modelpath = rf_model_trained,
 )
 
