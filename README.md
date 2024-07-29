@@ -30,9 +30,9 @@ Python package to predict membrane permeability of cyclic peptides.
 We provide the code as a [python package](https://pypi.org/project/cyc-pep-perm/), so the only thing you need is to install it. We recommend creating a new conda environment for that, which allows simple package management for a project. Follow these [instructions](https://docs.anaconda.com/free/anaconda/install/index.html) to install Anaconda. However, the package containing our code can also be installed without creating a project-specific environment. In that case, one just skips the first two lines of the following code:
 
 ```bash
-$ conda create -n cyc-pep-perm python=3.10
-$ conda activate cyc-pep-perm
-$ pip install cyc-pep-perm==0.1.0
+conda create -n cyc-pep-perm python=3.10
+conda activate cyc-pep-perm
+pip install cyc-pep-perm==0.1.1
 ```
 
 ### 🛠️ For Developers

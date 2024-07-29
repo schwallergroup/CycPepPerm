@@ -100,7 +100,8 @@ class DataProcessing:
 
         if not filename:
             filename = os.path.join(
-                self.data_dir, f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv'
+                self.data_dir,
+                f'{self.datapath.split("/")[-1].split(".")[0]}_mordred.csv',
             )
         self.df_mordred.to_csv(filename, index=False)
 
