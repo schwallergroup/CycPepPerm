@@ -110,7 +110,7 @@ class RFClass:
 
         return self.best_model
 
-    def evaluate(self, X: pd.DataFrame = None, y: pd.Series = None) -> tuple:
+    def evaluate(self, X_input: pd.DataFrame = None, y_true: pd.Series = None) -> tuple:
         """
         Evaluates the trained model on given data.
 
@@ -130,14 +130,14 @@ class RFClass:
         """
 
         assert self.best_model is not None, "Best model not found - load or train model"
-        if X is None:
-            X = self.X
-        if y is None:
-            y = self.y
+        if X_input is None:
+            X_input = self.X
+        if y_true is None:
+            y_true = self.y
         # Evaluation metrics
-        y_pred = self.best_model.predict(self.X)
-        accuracy = accuracy_score(self.y, y_pred)
-        cm = confusion_matrix(self.y, y_pred)
+        y_pred = self.best_model.predict(X_input)
+        accuracy = accuracy_score(y_true, y_pred)
+        cm = confusion_matrix(y_true, y_pred)
 
         print(f"Accuracy: {accuracy:.3f}")
         print(f"Confusion matrix:\n{cm}")

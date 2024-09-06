@@ -32,7 +32,7 @@ We provide the code as a [python package](https://pypi.org/project/cyc-pep-perm/
 ```bash
 conda create -n cyc-pep-perm python=3.10
 conda activate cyc-pep-perm
-pip install cyc-pep-perm==0.1.1
+pip install cyc-pep-perm==0.1.2
 ```
 
 ### 🛠️ For Developers

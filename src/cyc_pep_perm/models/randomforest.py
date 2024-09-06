@@ -108,7 +108,7 @@ class RF:
 
         return self.best_model
 
-    def evaluate(self, X: pd.DataFrame = None, y: pd.Series = None) -> tuple:
+    def evaluate(self, X_input: pd.DataFrame = None, y_true: pd.Series = None) -> tuple:
         """
         Evaluates the trained model on given data.
 
@@ -128,14 +128,14 @@ class RF:
         """
 
         assert self.best_model is not None, "Best model not found - load or train model"
-        if X is None:
-            X = self.X
-        if y is None:
-            y = self.y
+        if X_input is None:
+            X_input = self.X
+        if y_true is None:
+            y_true = self.y
         # Evaluation metrics
-        y_pred = self.best_model.predict(self.X)
-        rmse = np.sqrt(mean_squared_error(self.y, y_pred))
-        r2 = r2_score(self.y, y_pred)
+        y_pred = self.best_model.predict(X_input)
+        rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+        r2 = r2_score(y_true, y_pred)
 
         print(f"RMSE: {rmse:.3f}")
         print(f"R-squared: {r2:.3f}")
